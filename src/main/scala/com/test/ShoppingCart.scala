@@ -1,6 +1,6 @@
 package com.test
 
-class ShoppingCart (items: List[Item]) {
+class ShoppingCart (items: List[Item], offers: Map[String, Offer] = Map.empty) {
   private def groupedItems = items.groupBy(item => item.name).map((n, i) => (n, i.map(item => item.price)))
 
   groupedItems.foreach((name, prices) => {
@@ -11,7 +11,8 @@ class ShoppingCart (items: List[Item]) {
 
     var total = 0.0
     groupedItems.foreach((name, prices) => {
-      total += prices.sum
+      val totalForItem = if (offers.contains(name)) offers(name).apply(prices.size, prices.head) else prices.sum
+      total += totalForItem
     })
     total
   }
